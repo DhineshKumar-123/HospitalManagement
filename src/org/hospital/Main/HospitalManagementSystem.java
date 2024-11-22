@@ -47,25 +47,29 @@ public class HospitalManagementSystem
 			dao.getappointmentbydoctorId(doctorid);
 			break;
 		case 4:
-			out.print("Enter appointment id to create:\t");
-			appid=scan.nextInt();
-			out.print("Enter Patient Id :\t");
-			patientid=scan.nextInt();
-			out.print("Enter Doctor Id :\t");
-			doctorid=scan.nextInt();
-			out.print("Enter the date and time :\t");
-			appointmentDate = scan.nextLine();
-			out.print("Enter the Description :\t");
-			description = scan.nextLine();
-			dao.scheduleappointment(appid, patientid, doctorid, appointmentDate, description);
-			break;
+		    out.print("Enter appointment id to create:\t");
+		    appid = scan.nextInt();
+		    out.print("Enter Patient Id :\t");
+		    patientid = scan.nextInt();
+		    out.print("Enter Doctor Id :\t");
+		    doctorid = scan.nextInt();
+		    out.print("Enter the date and time :\t");
+		    scan.nextLine(); // Consume the leftover newline
+		    appointmentDate = scan.nextLine(); // Read the actual date input
+		    out.print("Enter the Description :\t");
+		    description = scan.nextLine(); // Now correctly reads the description
+		    dao.scheduleappointment(appid, patientid, doctorid, appointmentDate, description);
+		    break;
+
 		case 5:
 			out.print("Enter appointment id to Update:\t");
-			appid=scan.nextInt();
+			appid = scan.nextInt();
+			scan.nextLine(); // Consume the leftover newline
 			out.print("Enter the date and time :\t");
-			appointmentDate = scan.nextLine();
+			appointmentDate = scan.nextLine(); // Properly read the date and time input
 			dao.updateappointment(appid, appointmentDate);
 			break;
+
 		case 6:
 			out.print("Enter appointment id to delete:\t");
 			appid = scan.nextInt();
