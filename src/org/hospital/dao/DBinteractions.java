@@ -46,54 +46,85 @@ public class DBinteractions implements ServiceProvider
 	public void getappointmentbypatientId(int pid)
 	{
 		Connection con = DBConnUtil.establishconnection("null");
-		try {
-			PreparedStatement psm = con.prepareStatement("select * from appointment where patientId=?");
-			psm.setInt(1, pid);
-		    ResultSet rs = psm.executeQuery();
-		    if(rs.next())
-		    {
-		    	System.out.printf("\n%-15d %-15d %-15d %-10s %-15s" ,rs.getInt("appointmentId"),rs.getInt("patientId"), rs.getInt("doctorId"),rs.getString("appointmentDate"),rs.getString("description"));
+		 try {
+		        PreparedStatement psm = con.prepareStatement("SELECT * FROM appointment WHERE patientId=?");
+		        psm.setInt(1, pid);
+		        ResultSet rs = psm.executeQuery();
+
+		        // Flag to track if any rows were found
+		        boolean found = false;
+
+		        // Iterate over all rows in the result set
+		        while (rs.next()) {
+		            // Print details of each appointment
+		            System.out.printf("\n%-15d %-15d %-15d %-10s %-15s",
+		                rs.getInt("appointmentId"),
+		                rs.getInt("patientId"),
+		                rs.getInt("doctorId"),
+		                rs.getString("appointmentDate"),
+		                rs.getString("description")
+		            );
+		            found = true;  // Set flag to true if a row is found
+		        }
+
+		        // If no appointments were found, throw the custom exception
+		        if (!found) {
+		            throw new PatientNumberNotFoundException("No appointments found for patient ID: " + pid);
+		        }
+
+		        // Close connection
+		        con.close();
+		        
+		    } catch (SQLException | PatientNumberNotFoundException ex) {
+		        System.out.println("Error while finding appointments: " + ex.getMessage());
+		        ex.printStackTrace();
+		    } catch (IllegalFormatConversionException ex) {
+		        System.out.println("Error in formatting data: " + ex.getMessage());
+		        ex.printStackTrace();
 		    }
-		    else 
-		    	{
-		    	 throw new PatientNumberNotFoundException("No Patient is on the Number "+pid);
-//		    		System.out.println("No Appointment Object in the Patientid is there on"+pid);
-		    	}
-		    con.close();
-		}catch(SQLException | PatientNumberNotFoundException ex)
-		{
-			System.out.println("Error while finding !!! =>> "+ ex.getMessage());
-			ex.printStackTrace();
-		}catch(IllegalFormatConversionException ex) {
-			ex.printStackTrace();
 		}
-	}
 	@Override
-	public void getappointmentbydoctorId(int pid)
+	public void getappointmentbydoctorId(int docid)
 	{
 		Connection con = DBConnUtil.establishconnection("null");
-		try {
-			PreparedStatement psm = con.prepareStatement("select * from appointment where doctorId=?");
-			psm.setInt(1, pid);
-		    ResultSet rs = psm.executeQuery();
-		    if(rs.next())
-		    {
-		    	System.out.printf("\n%-15d %-15d %-15d %-10s %-15s" ,rs.getInt("appointmentId"),rs.getInt("patientId"), rs.getInt("doctorId"),rs.getString("appointmentDate"),rs.getString("description"));
+		    try {
+		        // Prepare the query to select appointments by doctorId
+		        PreparedStatement psm = con.prepareStatement("SELECT * FROM appointment WHERE doctorId=?");
+		        psm.setInt(1, docid);  // Use doctorId as the parameter
+		        ResultSet rs = psm.executeQuery();
+		        
+		        // Flag to track if any rows are found
+		        boolean found = false;
+
+		        // Loop through all the rows in the result set
+		        while (rs.next()) {
+		            // Print the details for each appointment
+		            System.out.printf("\n%-10d %-10d %-10d %10s %10s",
+		                rs.getInt("appointmentId"),
+		                rs.getInt("patientId"),
+		                rs.getInt("doctorId"),
+		                rs.getString("appointmentDate"),
+		                rs.getString("description")
+		            );
+		            found = true;  // Set the flag to true if a row is found
+		        }
+
+		        // If no appointments were found, throw the custom exception
+		        if (!found) {
+		            throw new AppointmentNotFoundException("No appointments found for doctor ID: " + docid);
+		        }
+
+		        // Close the connection
+		        con.close();
+		        
+		    } catch (SQLException | AppointmentNotFoundException ex) {
+		        System.out.println("Error while finding appointments: " + ex.getMessage());
+		        ex.printStackTrace();
+		    } catch (IllegalFormatConversionException ex) {
+		        System.out.println("Error in formatting data: " + ex.getMessage());
+		        ex.printStackTrace();
 		    }
-		    else 
-		    	{
-		    	 throw new AppointmentNotFoundException("No Appointment Object in the Doctorid is there on "+pid);
-//		    		System.out.println("No Appointment Object in the Patientid is there on"+pid);
-		    	}
-		    con.close();
-		}catch(SQLException | AppointmentNotFoundException ex)
-		{
-			System.out.println("Error while finding !!! =>> "+ ex.getMessage());
-			ex.printStackTrace();
-		}catch(IllegalFormatConversionException ex) {
-			ex.printStackTrace();
 		}
-	}
 	
 	@Override
 	public boolean scheduleappointment(int appointmentId,int patientId,int doctorId,String appointmentDate,String description)

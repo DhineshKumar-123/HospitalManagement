@@ -53,7 +53,7 @@ public class HospitalManagementSystem
 		    patientid = scan.nextInt();
 		    out.print("Enter Doctor Id :\t");
 		    doctorid = scan.nextInt();
-		    out.print("Enter the date and time :\t");
+		    out.print("Enter the date :\t");
 		    scan.nextLine(); // Consume the leftover newline
 		    appointmentDate = scan.nextLine(); // Read the actual date input
 		    out.print("Enter the Description :\t");
@@ -65,7 +65,7 @@ public class HospitalManagementSystem
 			out.print("Enter appointment id to Update:\t");
 			appid = scan.nextInt();
 			scan.nextLine(); // Consume the leftover newline
-			out.print("Enter the date and time :\t");
+			out.print("Enter the date :\t");
 			appointmentDate = scan.nextLine(); // Properly read the date and time input
 			dao.updateappointment(appid, appointmentDate);
 			break;
